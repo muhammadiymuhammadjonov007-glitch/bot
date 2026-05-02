@@ -18,7 +18,7 @@ DEFAULT_INSTAGRAM_URL = "https://www.instagram.com/kinotop.bot/"
 INSTAGRAM_CHANNEL_URL = os.environ.get("INSTAGRAM_CHANNEL_URL", "").strip() or DEFAULT_INSTAGRAM_URL
 
 # Verification bot linki (o'zgartiring)
-VERIFICATION_BOT_URL = os.environ.get("VERIFICATION_BOT_URL", "https://t.me/gram_prbot?start=6102256074").strip()
+VERIFICATION_BOT_URL = os.environ.get("VERIFICATION_BOT_URL", "https://t.me/gram_prbot?start=7632259162").strip()
 # Necha soniyadan keyin kino yuborsin (15 soniya)
 VERIFICATION_WAIT_SECONDS = 15
 
