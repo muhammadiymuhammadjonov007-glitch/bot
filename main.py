@@ -14,11 +14,11 @@ except ImportError:
     from .keep_alive import keep_alive, set_health_state
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "").strip()
-ADMIN_ID = int(os.environ.get("ADMIN_ID", "6346839136"))
+ADMIN_ID = int(os.environ.get("ADMIN_ID", "7632259162"))
 DEFAULT_INSTAGRAM_URL = "https://www.instagram.com/multiklaar?igsh=MzQ3Z2dub3cyejV5&utm_source=qr"
 INSTAGRAM_CHANNEL_URL = os.environ.get("INSTAGRAM_CHANNEL_URL", "").strip() or DEFAULT_INSTAGRAM_URL
 
-VERIFICATION_BOT_URL = os.environ.get("VERIFICATION_BOT_URL", "https://t.me/gram_prbot?start=7632259162").strip()
+VERIFICATION_BOT_URL = os.environ.get("VERIFICATION_BOT_URL", "https://t.me/muhammadjonov_7oo").strip()
 VERIFICATION_WAIT_SECONDS = 15
 
 logging.basicConfig(
