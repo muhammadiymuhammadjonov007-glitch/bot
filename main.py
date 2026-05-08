@@ -4,6 +4,7 @@ import asyncio
 import importlib
 import logging
 import os
+import signal
 import time
 from typing import TYPE_CHECKING
 
@@ -2053,15 +2054,67 @@ def build_application():
     return app
 
 
+# ===================== GRACEFUL SHUTDOWN (asosiy tuzatish) =====================
+
+async def run_bot_async():
+    set_health_state(bot="starting", last_error="")
+    app = build_application()
+
+    # Eski webhook yoki conflict ni tozalash
+    try:
+        await app.bot.delete_webhook(drop_pending_updates=True)
+        logger.info("Webhook o'chirildi.")
+    except Exception as exc:
+        logger.warning(f"Webhook o'chirishda xato (muhim emas): {exc}")
+
+    await app.initialize()
+    await app.start()
+    await app.updater.start_polling(
+        drop_pending_updates=True,
+        bootstrap_retries=-1,
+    )
+
+    logger.info("Bot ishga tushdi...")
+    set_health_state(bot="running", last_error="")
+
+    # SIGTERM va SIGINT signallarini ushlash (Render shutdown)
+    stop_event = asyncio.Event()
+    loop = asyncio.get_running_loop()
+
+    def _stop():
+        logger.info("Stop signali qabul qilindi. Bot to'xtatilmoqda...")
+        stop_event.set()
+
+    try:
+        loop.add_signal_handler(signal.SIGTERM, _stop)
+        loop.add_signal_handler(signal.SIGINT, _stop)
+    except NotImplementedError:
+        # Windows da signal handler ishlamaydi, muhim emas
+        pass
+
+    # Signal kelguncha kutish
+    await stop_event.wait()
+
+    logger.info("Bot graceful shutdown boshlandi...")
+    set_health_state(bot="stopped")
+    await app.updater.stop()
+    await app.stop()
+    await app.shutdown()
+    logger.info("Bot to'liq to'xtatildi.")
+
+
 def run_bot_forever():
     while True:
         try:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-            set_health_state(bot="starting", last_error="")
-            app = build_application()
-            logger.info("Bot ishga tushdi...")
-            set_health_state(bot="running", last_error="")
-            app.run_polling(bootstrap_retries=-1)
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(run_bot_async())
+            finally:
+                try:
+                    loop.close()
+                except Exception:
+                    pass
             logger.warning("Polling to'xtadi. 5 soniyadan keyin qayta ishga tushadi.")
             set_health_state(bot="stopped")
         except Exception as exc:
