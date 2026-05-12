@@ -837,7 +837,7 @@ async def start(update, context):
 
 
 async def unknown_command(update, context):
-    await update.message.reply_text("❓ Bu komanda mavjud emas. Multfilm kodini yozing.")
+    await update.message.reply_text("❓ Bu komanda mavjud emas. FIlm kodini yozing.")
 
 
 # ===================== BROADCAST =====================
@@ -1136,7 +1136,7 @@ async def get_kod_vaqt(update, context):
     try:
         exists = movie_exists(code)
     except Exception:
-        logger.exception("Multfilm kodini tekshirishda xato yuz berdi")
+        logger.exception("Film kodini tekshirishda xato yuz berdi")
         await reply_service_unavailable(update)
         return ConversationHandler.END
 
@@ -1501,7 +1501,7 @@ async def edit_start(update, context):
     user_id = update.message.from_user.id
     if user_id != ADMIN_ID:
         return
-    await update.message.reply_text("Tahrirlash uchun multfilm kodini kiriting:")
+    await update.message.reply_text("Tahrirlash uchun Film kodini kiriting:")
     return EDIT_KOD
 
 
@@ -1913,7 +1913,7 @@ async def handle_message(update, context):
             return
 
     if not text.isdigit():
-        await update.message.reply_text("🎬 Multfilm kodini yuboring yoki ❤️ Sevimlilarim tugmasini bosing.", reply_markup=get_user_menu_keyboard())
+        await update.message.reply_text("🎬 Film kodini yuboring yoki ❤️ Sevimlilarim tugmasini bosing.", reply_markup=get_user_menu_keyboard())
         return
 
     code = text
